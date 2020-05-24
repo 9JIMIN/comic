@@ -2,11 +2,11 @@ import ast
 import scrapy
 import json
 from datetime import datetime
-from comic.items import ComicItem
+from comic.items import CommentItem
 
 
-class ComicSpider(scrapy.Spider):
-    name = "comic"
+class CommentSpider(scrapy.Spider):
+    name = "comment"
 
     start_urls = [
         "https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=comic&pool=cbox3&lang=ko&objectId=570503_304&pageSize=5"]
@@ -28,7 +28,7 @@ class ComicSpider(scrapy.Spider):
         comments = json.loads(comments)
 
         for comment in comments:
-            item = ComicItem()
+            item = CommentItem()
             item["contents"] = comment["contents"]
             item["like"] = comment["sympathyCount"]
 

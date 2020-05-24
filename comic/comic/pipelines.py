@@ -2,7 +2,7 @@ import logging
 import pymongo
 
 
-class ComicPipeline(object):
+class CommentPipeline(object):
 
     collection_name = 'comments'
 
