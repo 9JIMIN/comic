@@ -64,9 +64,11 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'comic.pipelines.ComicPipeline': 300,
-}
+# ITEM_PIPELINES = {
+#     'comic.pipelines.CommentPipeline': 500,
+#     'comic.pipelines.EpisodePipeline': 400,
+#     'comic.pipelines.WebtoonPipeline': 300
+# }
 
 MONGO_URI = 'mongodb://localhost:27017'
 MONGO_DATABASE = 'comic'

@@ -3,6 +3,10 @@ import lxml
 import json
 import re
 from bs4 import BeautifulSoup
+import pymongo
+
+connection = pymongo.MongoClient('mongodb://localhost:27017')
+db = connection["comic"]
 
 html = requests.get(
     "https://comic.naver.com/webtoon/weekday.nhn")
@@ -18,12 +22,18 @@ for aTag in aTags:
     weekday = link.split("=")[2]
     title = aTag.img.attrs["title"]
 
+    html = requests.get(
+        f"https://comic.naver.com/webtoon/list.nhn?titleId={titleId}&weekday={weekday}")
+    soup = BeautifulSoup(html.content, "lxml")
+    link = soup.select_one("td.title > a").attrs["href"]
+    no = re.search("no=(.*?)&", link).group(1)
     piece = {}
     piece["title"] = title
     piece["titleId"] = titleId
     piece["weekday"] = weekday
+    piece["no"] = no
 
     data.append(piece)
 
-with open("webtoonList.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
+
+db["webtoons"].insert_many(data)
