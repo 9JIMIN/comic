@@ -5,14 +5,13 @@ class CommentItem(Item):
     contents = Field()
     like = Field()
     date = Field()
-    titleId = Field()
-    no = Field()
+    episodeId = Field()
 
 
 class EpisodeItem(Item):
     rating = Field()
     date = Field()
-    titleId = Field()
+    webtoonId = Field()
     no = Field()
 
 
@@ -20,4 +19,4 @@ class WebtoonItem(Item):
     title = Field()
     titleId = Field()
     weekday = Field()
-    latestNo = Field()
+    totalNo = Field()

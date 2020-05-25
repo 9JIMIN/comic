@@ -5,12 +5,14 @@ import re
 from datetime import datetime
 from comic.items import WebtoonItem
 from pymongo import MongoClient
+import pymongo
 
 
 class WebtoonSpider(scrapy.Spider):
     name = "webtoon"
     start_urls = ["https://comic.naver.com/webtoon/weekday.nhn"]
     db = MongoClient()["comic"]
+    db.webtoons.create_index([("titleId", pymongo.ASCENDING)], unique=True)
     custom_settings = {
         'ITEM_PIPELINES': {
             'comic.pipelines.WebtoonPipeline': 400
@@ -38,5 +40,5 @@ class WebtoonSpider(scrapy.Spider):
         item = response.meta['item']
         link = response.css("td.title > a::attr(href)").get()
         no = re.search("no=(.*?)&", link).group(1)
-        item["latestNo"] = int(no)
+        item["totalNo"] = int(no)
         yield item

@@ -27,12 +27,18 @@ class CommentSpider(scrapy.Spider):
         episodes = self.db["episodes"].find()
         for episode in episodes:
             latest = episode['no']
-            for i in range(latest-1, latest):
-                print(i)
+            titleId = self.db["webtoons"].find_one(
+                {"_id": episode["webtoonId"]})["titleId"]
+            ep = 1  # episode amount
+            co = 5  # comment amount
+            for i in range(latest-ep, latest):
                 params = {"ticket": "comic", "pool": "cbox3", "sort": "best",
-                          "lang": "ko", "objectId": str(episode["titleId"])+"_"+str(i), "pageSize": "10"}
+                          "lang": "ko", "objectId": str(titleId)+"_"+str(i), "pageSize": str(co)}
                 for url in self.start_urls:
-                    yield scrapy.FormRequest(url=url, headers=self.headers, method="GET", formdata=params)
+                    request = scrapy.FormRequest(
+                        url=url, headers=self.headers, method="GET", formdata=params)
+                    request.meta["item"] = episode['_id']
+                    yield request
 
     def parse(self, response):
         comments = response.body.decode('utf-8')
@@ -50,6 +56,5 @@ class CommentSpider(scrapy.Spider):
             item["contents"] = comment["contents"]
             item["like"] = comment["sympathyCount"]-comment["antipathyCount"]
             item["date"] = date
-            item["titleId"] = int(comment["objectId"].split("_")[0])
-            item["no"] = int(comment["objectId"].split("_")[1])
+            item["episodeId"] = response.meta["item"]
             yield item

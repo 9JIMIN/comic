@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from comic.items import EpisodeItem
 from pymongo import MongoClient
+from dateutil.relativedelta import relativedelta
 
 
 class EpisodeSpider(scrapy.Spider):
@@ -26,14 +27,18 @@ class EpisodeSpider(scrapy.Spider):
             titleId = webtoon['titleId']
             params = {"titleId": str(titleId)}
             for url in self.start_urls:
-                yield scrapy.FormRequest(url=url, method="GET", formdata=params)
+                request = scrapy.FormRequest(
+                    url=url, method="GET", formdata=params)
+                request.meta["item"] = webtoon["_id"]
+                yield request
 
     def parse(self, response):
         dates = response.css("td.num::text").getall()
         width = response.css("span.star em::attr(style)").getall()
         no_list = response.css("td.title > a::attr(href)").getall()
 
-        titleId = int(response.request.url.split("=")[1])
+        # titleId = int(response.request.url.split("=")[1])
+        # webtoonId=self.db["webtoons"].find()
 
         for i in range(len(dates)):
             date = datetime.strptime(dates[i], "%Y.%m.%d")
@@ -44,5 +49,5 @@ class EpisodeSpider(scrapy.Spider):
             item["rating"] = rating
             item["date"] = date
             item["no"] = no
-            item["titleId"] = titleId
+            item["webtoonId"] = response.meta["item"]
             yield item
