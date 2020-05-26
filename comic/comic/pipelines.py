@@ -56,6 +56,8 @@ class EpisodePipeline(object):
         # opening db connection
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+        self.db[self.collection_name].create_index(
+            [("titleId", pymongo.ASCENDING), ("episodeNo", pymongo.DESCENDING)], unique=True)
 
     def close_spider(self, spider):
         # clean up when spider is closed
@@ -89,6 +91,8 @@ class WebtoonPipeline(object):
         # opening db connection
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+        self.db[self.collection_name].create_index(
+            [("titleId", pymongo.ASCENDING)], unique=True)
 
     def close_spider(self, spider):
         # clean up when spider is closed
