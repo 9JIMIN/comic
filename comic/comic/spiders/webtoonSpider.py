@@ -27,13 +27,18 @@ class WebtoonSpider(scrapy.Spider):
             titleId = int(re.search("=(.*?)&", link).group(1))
 
             # dayrank
+            # 주 2 회 연재하는 웹툰을 찾아서 같이 넣어야함.
+            # 그걸 위해서 제목으로 검색해서 그걸로 루프.
             dayrank = []
-            for i in response.xpath(f"//div[@class='thumb']/a/img[@title='{title}']/.."):
+            for res in response.xpath(f"//div[@class='thumb']/a/img[@title='{title}']/.."):
                 el = {}
-                d = i.attrib['href'].split("=")[2]
-                el["day"] = d
-                r = i.attrib['onclick'].split("'")[5]
-                el["rank"] = int(r)
+
+                day = res.attrib['href'].split("=")[2]
+                el["day"] = day
+
+                rank = res.attrib['onclick'].split("'")[5]
+                el["rank"] = int(rank)
+
                 dayrank.append(el)
 
             item = WebtoonItem()
@@ -74,26 +79,25 @@ class WebtoonSpider(scrapy.Spider):
         item["age"] = age
 
         request = scrapy.Request(
-            f"https://comic.naver.com/webtoon/list.nhn?titleId={item['titleId']}&page=200", self.get_period)
+            f"https://comic.naver.com/webtoon/list.nhn?titleId={item['titleId']}&page=200", self.parse_date)
         request.meta['item'] = item
         yield request
 
-    def get_period(self, response):
+    def parse_date(self, response):
         item = response.meta['item']
 
         list_length = len(response.css("td.num"))
         d_text = response.css("td.num::text").getall()[list_length-1]
 
-        date = datetime.strptime(d_text, "%Y.%m.%d")
-
-        item["startDate"] = date
+        startDate = datetime.strptime(d_text, "%Y.%m.%d")
+        item["startDate"] = startDate
 
         request = scrapy.Request(
-            f"https://comic.like.naver.com/likeIt/likeItContent.jsonp?serviceId=COMIC&contentsId={item['titleId']}", self.parse_likeCount)
+            f"https://comic.like.naver.com/likeIt/likeItContent.jsonp?serviceId=COMIC&contentsId={item['titleId']}", self.parse_likeIt)
         request.meta['item'] = item
         yield request
 
-    def parse_likeCount(self, response):
+    def parse_likeIt(self, response):
         item = response.meta['item']
 
         likeIt = response.body.decode('utf-8')

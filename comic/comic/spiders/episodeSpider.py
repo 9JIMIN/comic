@@ -31,14 +31,14 @@ class EpisodeSpider(scrapy.Spider):
 
     def parse(self, response):
         dates = response.css("td.num::text").getall()
-        width = response.css("span.star em::attr(style)").getall()
+        star = response.css("span.star em::attr(style)").getall()
         no_list = response.css("td.title > a::attr(href)").getall()
 
         titleId = int(response.request.url.split("=")[1])
 
         for i in range(len(dates)):
             updateDate = datetime.strptime(dates[i], "%Y.%m.%d")
-            rating = float(re.search(":(.*?)%", width[i]).group(1))
+            rating = float(re.search(":(.*?)%", star[i]).group(1))
             episodeNo = int(re.search("no=(.*?)&", no_list[i]).group(1))
 
             item = EpisodeItem()

@@ -27,7 +27,7 @@ class CommentSpider(scrapy.Spider):
         for episode in episodes:
             episodeNo = episode['episodeNo']
             titleId = episode["titleId"]
-            i = 5  # comment amount
+            i = 5  # comment amount (max: 100)
             params = {"ticket": "comic", "pool": "cbox3", "sort": "best",
                       "lang": "ko", "objectId": str(titleId)+"_"+str(episodeNo), "pageSize": str(i)}
             for url in self.start_urls:
@@ -40,15 +40,14 @@ class CommentSpider(scrapy.Spider):
         comments = response.body.decode('utf-8')
         comments = comments.split('"commentList":')[1]
         comments = comments.split(',"pageModel"')[0]
-
         comments = json.loads(comments)
 
         for comment in comments:
-            item = CommentItem()
             dt_string = comment["modTime"]
             date = datetime.strptime(
                 dt_string, "%Y-%m-%dT%H:%M:%S%z")
 
+            item = CommentItem()
             item["contents"] = comment["contents"]
             item["like"] = comment["sympathyCount"]-comment["antipathyCount"]
             item["date"] = date
