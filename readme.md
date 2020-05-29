@@ -8,21 +8,21 @@
 - matplotlib를 통한 시각화
 
 <p align="center">
-<img src="./readme-img/target_data.JPG" width="800" >
+<img src="./readme_img/target_data.JPG" width="800" >
 <p align="center">target data (webtoon list - episode list - comment list)</p>
 </p>
 
 <p align="center">
-<img src="./readme-img/db_data.JPG" width="800" >
+<img src="./readme_img/db_data.JPG" width="800" >
 <p align="center">data in mongoDB  (webtoons collection - episode collection - comment collection)</p>
 </p>
 
 <p align="center">
-<img src="./readme-img/graph_1.JPG" width="800" >
+<img src="./readme_img/graph_1.JPG" width="800" >
 <p align="center">인기순 정렬, 요일별 웹툰 인기도 비교</p>
 </p>
 
 <p align="center">
-<img src="./readme-img/graph_2.JPG" width="800" >
+<img src="./readme_img/graph_2.JPG" width="800" >
 <p align="center">장르 분포 pie chart</p>
 </p>
