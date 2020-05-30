@@ -26,3 +26,8 @@
 <img src="./readme-img/graph_2.JPG" width="800" >
 <p align="center">장르 분포 pie chart</p>
 </p>
+
+<p align="center">
+<img src="./readme-img/a_1.JPG" width="800" >
+<p align="center">특정 에피소드 댓글 분포(Y축: 좋아요, X축: 시간)</p>
+</p>
